@@ -8,7 +8,7 @@ export default function RootLayout() {
       screenOptions={{
         tabBarShowLabel: false,
         headerShown:false,
-        tabBarActiveinColor: Colors.primary,
+        tabBarInactiveTintColor :Colors.primary,
         tabBarInactiveTintColor: Colors.grey,
         tabBarStyle:{
           backgroundColor:"black",
