@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs } from "expo-router";
-import { Colors } from "C:/Spotlight-App/constants/theme.ts";
+import { Colors } from "C:/Spotlight-App/constants/theme";
 
 export default function RootLayout() {
   return (
@@ -9,9 +9,8 @@ export default function RootLayout() {
         tabBarShowLabel: false,
         headerShown:false,
         tabBarInactiveTintColor :Colors.primary,
-        tabBarInactiveTintColor: Colors.grey,
         tabBarStyle:{
-          backgroundColor:"black",
+          backgroundColor:"#000000ff",
           borderTopWidth: 0,
           position: "absolute",
           elevation: 0,

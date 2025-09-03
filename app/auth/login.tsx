@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-import { COLORS } from "../constants/theme.ts";
-import { styles } from "../styles/auth.styles";
+import { Colors } from "C:/Spotlight-App/constants/theme";
+import { styles } from "C:/Spotlight-App/Styles/auth.styles.js";
 
 export default function Login() {
   return (
@@ -9,7 +9,7 @@ export default function Login() {
       {/* BRAND SECTION */}
       <View style={styles.brandSection}>
         <View style={styles.logoContainer}>
-          <Ionicons name="leaf" size={32} color={COLORS.primary} />
+          <Ionicons name="leaf" size={50} color={Colors.primary} />
         </View>
 
         <Text style={styles.appName}>spotlight</Text>
