@@ -1,66 +1,31 @@
-import { useSignIn } from '@clerk/clerk-expo'
-import { Link, useRouter } from 'expo-router'
-import React from 'react'
-import { Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ClerkProvider } from "@clerk/clerk-expo";
+import { Slot } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 
-export default function Page() {
-  const { signIn, setActive, isLoaded } = useSignIn()
-  const router = useRouter()
-
-  const [emailAddress, setEmailAddress] = React.useState('')
-  const [password, setPassword] = React.useState('')
-
-  // Handle the submission of the sign-in form
-  const onSignInPress = async () => {
-    if (!isLoaded) return
-
-    // Start the sign-in process using the email and password provided
+const tokenCache = {
+  async getToken(key: string) {
     try {
-      const signInAttempt = await signIn.create({
-        identifier: emailAddress,
-        password,
-      })
-
-      // If sign-in process is complete, set the created session as active
-      // and redirect the user
-      if (signInAttempt.status === 'complete') {
-        await setActive({ session: signInAttempt.createdSessionId })
-        router.replace('/')
-      } else {
-        // If the status isn't complete, check why. User might need to
-        // complete further steps.
-        console.error(JSON.stringify(signInAttempt, null, 2))
-      }
+      return SecureStore.getItemAsync(key);
     } catch (err) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
-      console.error(JSON.stringify(err, null, 2))
+      return null;
     }
-  }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
 
+export default function RootLayout() {
   return (
-    <View>
-      <Text>Sign in</Text>
-      <TextInput
-        autoCapitalize="none"
-        value={emailAddress}
-        placeholder="Enter email"
-        onChangeText={(emailAddress) => setEmailAddress(emailAddress)}
-      />
-      <TextInput
-        value={password}
-        placeholder="Enter password"
-        secureTextEntry={true}
-        onChangeText={(password) => setPassword(password)}
-      />
-      <TouchableOpacity onPress={onSignInPress}>
-        <Text>Continue</Text>
-      </TouchableOpacity>
-      <View style={{ display: 'flex', flexDirection: 'row', gap: 3 }}>
-        <Link href="/sign-up">
-          <Text>Sign up</Text>
-        </Link>
-      </View>
-    </View>
-  )
+    <ClerkProvider
+      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
+      tokenCache={tokenCache}
+    >
+      <Slot /> {/* This will render all your routes, including /auth/login */}
+    </ClerkProvider>
+  );
 }

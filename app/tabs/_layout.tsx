@@ -1,8 +1,15 @@
+import { ClerkProvider } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import Constants from "expo-constants";
+import { Slot, Tabs } from "expo-router";
 import { Colors } from "C:/Spotlight-App/constants/theme";
 
 export default function RootLayout() {
+  <ClerkProvider
+      publishableKey={Constants.expoConfig.extra.clerkPublishableKey}
+    >
+      <Slot />
+    </ClerkProvider>
   return (
     <Tabs
       screenOptions={{
