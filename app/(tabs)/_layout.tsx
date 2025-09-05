@@ -6,8 +6,6 @@ import { Redirect, Tabs } from "expo-router";
 
 export default function TabsLayout() {
   const { isLoaded, isSignedIn } = useUser();
-
-  // ⛔ Prevent redirects before Clerk finishes loading
   if (!isLoaded) return null;
 
   // If not signed in, send to login once
@@ -21,7 +19,6 @@ export default function TabsLayout() {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.dark,
         tabBarStyle: {
           backgroundColor: "black",
           borderTopWidth: 0,

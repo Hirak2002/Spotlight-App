@@ -1,38 +1,30 @@
 import { Colors } from "@/constants/theme";
-import { useAuth, useSSO } from "@clerk/clerk-expo";
+import { useSSO, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import * as Linking from "expo-linking";
 import { useRouter } from "expo-router";
-import { useEffect } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { styles } from "C:/Spotlight-App/Styles/auth.styles";
+import { styles } from "C:/Spotlight-App/Styles/auth.styles.js";
 
 export default function Login() {
   const { startSSOFlow } = useSSO();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn } = useUser(); // ✅ get sign-in state
   const router = useRouter();
 
-  // ✅ Auto-redirect if user is already signed in
-  useEffect(() => {
-    if (isSignedIn) {
-      router.replace("/tabs");
-    }
-  }, [isSignedIn]);
+  // ✅ If already signed in, redirect immediately
+  if (isSignedIn) {
+    router.replace("C:/Spotlight-App/app/(tabs)");
+    return null;
+  }
 
   const handleGoogleSignIn = async () => {
     try {
-      // ✅ Create redirect URL for Clerk OAuth
-      const redirectUrl = Linking.createURL("/sso-callback");
-
       const { createdSessionId, setActive } = await startSSOFlow({
         strategy: "oauth_google",
-        redirectUrl,
       });
 
-      // ✅ Set Clerk session after successful login
       if (setActive && createdSessionId) {
         await setActive({ session: createdSessionId });
-        router.replace("/tabs");
+        router.replace("C:/Spotlight-App/app/(tabs)");
       }
     } catch (error) {
       console.error("OAuth error:", error);
@@ -67,7 +59,7 @@ export default function Login() {
           activeOpacity={0.9}
         >
           <View style={styles.googleIconContainer}>
-            <Ionicons name="logo-google" size={20} color={Colors.primary} />
+            <Ionicons name="logo-google" size={20} color={Colors.surface} />
           </View>
           <Text style={styles.googleButtonText}>Continue with Google</Text>
         </TouchableOpacity>
