@@ -1,5 +1,4 @@
-import { ClerkProvider } from "@clerk/clerk-expo";
-import { Slot } from "expo-router";
+
 import * as SecureStore from "expo-secure-store";
 
 const tokenCache = {
@@ -18,14 +17,3 @@ const tokenCache = {
     }
   },
 };
-
-export default function RootLayout() {
-  return (
-    <ClerkProvider
-      publishableKey={process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!}
-      tokenCache={tokenCache}
-    >
-      <Slot /> {/* This will render all your routes, including /auth/login */}
-    </ClerkProvider>
-  );
-}

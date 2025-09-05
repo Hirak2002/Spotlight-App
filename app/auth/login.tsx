@@ -1,32 +1,81 @@
-import { ClerkProvider } from "@clerk/clerk-expo";
-import Constants from "expo-constants";
-import { Slot } from "expo-router";
-import * as SecureStore from "expo-secure-store";
-export default function Login() {
-  const tokenCache = {
-    async getToken(key: string) {
-      try {
-        return SecureStore.getItemAsync(key);
-      } catch (err) {
-        return null;
-      }
-    },
-    async saveToken(key: string, value: string) {
-      try {
-        return SecureStore.setItemAsync(key, value);
-      } catch (err) {
-        return;
-      }
-    },
-  };
-  
-    return (
-      <ClerkProvider
-      publishableKey={Constants.expoConfig.extra.clerkPublishableKey}
-    >
-      <Slot />
-      </ClerkProvider>
-    );
+import { Colors } from "@/constants/theme";
+import { useAuth, useSSO } from "@clerk/clerk-expo";
+import { Ionicons } from "@expo/vector-icons";
+import * as Linking from "expo-linking";
+import { useRouter } from "expo-router";
+import { useEffect } from "react";
+import { Image, Text, TouchableOpacity, View } from "react-native";
+import { styles } from "C:/Spotlight-App/Styles/auth.styles";
 
-  
+export default function Login() {
+  const { startSSOFlow } = useSSO();
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  // ✅ Auto-redirect if user is already signed in
+  useEffect(() => {
+    if (isSignedIn) {
+      router.replace("/tabs");
+    }
+  }, [isSignedIn]);
+
+  const handleGoogleSignIn = async () => {
+    try {
+      // ✅ Create redirect URL for Clerk OAuth
+      const redirectUrl = Linking.createURL("/sso-callback");
+
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy: "oauth_google",
+        redirectUrl,
+      });
+
+      // ✅ Set Clerk session after successful login
+      if (setActive && createdSessionId) {
+        await setActive({ session: createdSessionId });
+        router.replace("/tabs");
+      }
+    } catch (error) {
+      console.error("OAuth error:", error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      {/* BRAND SECTION */}
+      <View style={styles.brandSection}>
+        <View style={styles.logoContainer}>
+          <Ionicons name="leaf" size={32} color={Colors.primary} />
+        </View>
+        <Text style={styles.appName}>spotlight</Text>
+        <Text style={styles.tagline}>don't miss anything</Text>
+      </View>
+
+      {/* ILLUSTRATION */}
+      <View style={styles.illustrationContainer}>
+        <Image
+          source={require("C:/Spotlight-App/assets/images/Instant information-cuate.png")}
+          style={styles.illustration}
+          resizeMode="cover"
+        />
+      </View>
+
+      {/* LOGIN SECTION */}
+      <View style={styles.loginSection}>
+        <TouchableOpacity
+          style={styles.googleButton}
+          onPress={handleGoogleSignIn}
+          activeOpacity={0.9}
+        >
+          <View style={styles.googleIconContainer}>
+            <Ionicons name="logo-google" size={20} color={Colors.primary} />
+          </View>
+          <Text style={styles.googleButtonText}>Continue with Google</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.termsText}>
+          By continuing, you agree to our Terms and Privacy Policy
+        </Text>
+      </View>
+    </View>
+  );
 }
