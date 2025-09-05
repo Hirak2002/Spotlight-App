@@ -2,19 +2,21 @@ import { Colors } from "@/constants/theme";
 import { useSSO, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useEffect } from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { styles } from "C:/Spotlight-App/Styles/auth.styles.js";
+import { styles } from "C:/Spotlight-App/Styles/auth.styles.js"; // ✅ use alias instead of Windows path
 
 export default function Login() {
   const { startSSOFlow } = useSSO();
-  const { isSignedIn } = useUser(); // ✅ get sign-in state
+  const { isSignedIn } = useUser();
   const router = useRouter();
 
-  // ✅ If already signed in, redirect immediately
-  if (isSignedIn) {
-    router.replace("C:/Spotlight-App/app/(tabs)");
-    return null;
-  }
+  // ✅ Redirect only AFTER render
+  useEffect(() => {
+    if (isSignedIn) {
+      router.replace("/(tabs)"); // ✅ expo-router uses relative routes
+    }
+  }, [isSignedIn]);
 
   const handleGoogleSignIn = async () => {
     try {
@@ -24,7 +26,7 @@ export default function Login() {
 
       if (setActive && createdSessionId) {
         await setActive({ session: createdSessionId });
-        router.replace("C:/Spotlight-App/app/(tabs)");
+        router.replace("/(tabs)"); // ✅ relative path
       }
     } catch (error) {
       console.error("OAuth error:", error);
@@ -45,7 +47,7 @@ export default function Login() {
       {/* ILLUSTRATION */}
       <View style={styles.illustrationContainer}>
         <Image
-          source={require("C:/Spotlight-App/assets/images/Instant information-cuate.png")}
+          source={require("C:/Spotlight-App/assets/images/Instant information-cuate.png")} 
           style={styles.illustration}
           resizeMode="cover"
         />
