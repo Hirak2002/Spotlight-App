@@ -18,9 +18,9 @@ export default function Index() {
     if (!ready || !isLoaded) return;
 
     if (isSignedIn) {
-      router.replace("C:/Spotlight-App/app/(tabs)");
+      router.replace("/(tabs)");
     } else {
-      router.replace("C:/Spotlight-App/app/(auth)/login.tsx");
+      router.replace("/(auth)/login");
     }
   }, [ready, isLoaded, isSignedIn]);
 

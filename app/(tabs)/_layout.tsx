@@ -7,16 +7,16 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors.primary,
-        tabBarInactiveTintColor: Colors.dark,
+        tabBarInactiveTintColor: Colors.light.tabIconDefault,
         headerShown: false,
       }}
     >
       <Tabs.Screen
-        name="notifications"
+        name="index"
         options={{
-          title: "Notifications",
+          title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="notifications" color={color} size={size} />
+            <Ionicons name="home" color={color} size={size} />
           ),
         }}
       />
@@ -26,6 +26,24 @@ export default function TabsLayout() {
           title: "Bookmarks",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="bookmark" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="create"
+        options={{
+          title: "Create",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="notifications"
+        options={{
+          title: "Notifications",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="notifications" color={color} size={size} />
           ),
         }}
       />
